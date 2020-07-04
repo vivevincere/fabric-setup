@@ -11,7 +11,7 @@ import(
 
 func main(){
 
-	objects := goosefabric.Init("/Users/vincentchung/cleanslate/thefix/config.yaml", "mychannel", "Admin", "Org1")
+	objects := goosefabric.Init("./config.yaml", "mychannel", "Admin", "Org1")
 	err := objects.LogEvent("base", "faucet","1234", "6d61697961686565")
 	if err != nil{
 		log.Fatal("LogEvent failed: %v", err)
