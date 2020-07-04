@@ -1,91 +1,75 @@
 package main
 
 import (
+    "encoding/hex"
     "fmt"
 
-    "github.com/hyperledger/fabric-chaincode-go/shim"
-    "github.com/hyperledger/fabric-protos-go/peer"
+    "github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-// SimpleAsset implements a simple chaincode to manage an asset
-type SimpleAsset struct {
+const (
+    indexName = "GooseEvent"
+)
+
+// DltAudit provides functions for logging GOOSE events to the ledger
+type DltAudit struct {
+    contractapi.Contract
 }
 
-// Init is called during chaincode instantiation to initialize any
-// data. Note that chaincode upgrade also calls this function to reset
-// or to migrate data.
-func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
-    // Get the args from the transaction proposal
-    // args := stub.GetStringArgs()
-    // if len(args) != 2 {
-    //         return shim.Error("Incorrect arguments. Expecting a key and a value")
-    // }
-
-    // // Set up any variables or assets here by calling stub.PutState()
-
-    // // We store the key and the value on the ledger
-    // err := stub.PutState(args[0], []byte(args[1]))
-    // if err != nil {
-    //         return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
-    // }
-    return shim.Success(nil)
+// InitLedger provides initialization
+func (d *DltAudit) InitLedger(ctx contractapi.TransactionContextInterface) error {
+    return nil
 }
 
-// Invoke is called per transaction on the chaincode. Each transaction is
-// either a 'get' or a 'set' on the asset created by Init function. The Set
-// method may create a new asset by specifying a new key-value pair.
-func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-    // Extract the function and args from the transaction proposal
-    fn, args := stub.GetFunctionAndParameters()
-
-    var result string
-    var err error
-    if fn == "set" {
-            result, err = set(stub, args)
-    } else { // assume 'get' even if fn is nil
-            result, err = get(stub, args)
-    }
+// LogEvent will log a new GOOSE event to the ledger
+func (d *DltAudit) LogEvent(ctx contractapi.TransactionContextInterface, id string, timestamp string, goosePacket string) error {
+    key, err := ctx.GetStub().CreateCompositeKey(indexName, []string{id, string(timestamp)})
     if err != nil {
-            return shim.Error(err.Error())
+        return fmt.Errorf("Error creating composite key for GooseEvent")
     }
 
-    // Return the result as success payload
-    return shim.Success([]byte(result))
-}
-
-// Set stores the asset (both key and value) on the ledger. If the key exists,
-// it will override the value with the new one
-func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-    if len(args) != 2 {
-            return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
-    }
-
-    err := stub.PutState(args[0], []byte(args[1]))
+    packetBytes, err := hex.DecodeString(goosePacket)
     if err != nil {
-            return "", fmt.Errorf("Failed to set asset: %s", args[0])
-    }
-    return args[1], nil
-}
-
-// Get returns the value of the specified asset key
-func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-    if len(args) != 1 {
-            return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+        return fmt.Errorf("Error decoding the GOOSE packet (expected valid hex string)")
     }
 
-    value, err := stub.GetState(args[0])
+    err = ctx.GetStub().PutState(key, packetBytes)
     if err != nil {
-            return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+        return fmt.Errorf("Error putting key '%s' and value '%s'", key, packetBytes)
     }
-    if value == nil {
-            return "", fmt.Errorf("Asset not found: %s", args[0])
-    }
-    return string(value), nil
+
+    return ctx.GetStub().SetEvent("logEvent", packetBytes)
 }
 
-// main function starts up the chaincode in the container during instantiate
-func main() {
-    if err := shim.Start(new(SimpleAsset)); err != nil {
-            fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+// QueryEvent gets the event for a given IED ID and timestamp
+func (d *DltAudit) QueryEvent(ctx contractapi.TransactionContextInterface, id string, timestamp string) (string, error) {
+    key, err := ctx.GetStub().CreateCompositeKey(indexName, []string{id, string(timestamp)})
+    if err != nil {
+        return "", fmt.Errorf("Error creating composite key for GooseEvent")
+    }
+
+    eventAsBytes, err := ctx.GetStub().GetState(key)
+
+    if err != nil {
+        return "", fmt.Errorf("Failed to read: %s", err.Error())
+    }
+
+    if eventAsBytes == nil {
+        return "", fmt.Errorf("%s does not exist", id)
+    }
+
+    return hex.EncodeToString(eventAsBytes), nil
+}
+
+func main(){
+    dltAudit := new(DltAudit)
+    contract,err := contractapi.NewChaincode(dltAudit)
+
+    if err != nil {
+        panic(err.Error())
+    }
+
+    if err := contract.Start(); err != nil{
+        panic(err.Error())
     }
 }

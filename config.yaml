@@ -30,7 +30,7 @@ client:
 
   # Root of the MSP directories with keys and certs. The Membership Service Providers is component that aims to offer an abstraction of a membership operation architecture.
   cryptoconfig:
-    path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config"
+    path: "./artifacts/channel/crypto-config"
 
   #Some SDKs support pluggable KV stores, the properties under "credentialStore" are implementation specific
   # credentialStore:
@@ -57,9 +57,9 @@ client:
 
     client:
       key: 
-        path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key"
+        path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key"
       cert:
-        path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt"
+        path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt"
 
 
 # [Optional]. But most apps would have this section so that channel objects can be constructed based on the content below.
@@ -97,17 +97,17 @@ organizations:
   OrdererOrg:
      mspid: OrdererMSP
 
-     cryptopath: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp"
+     cryptopath: "./artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp"
 
      # adminPrivateKey:
-     #  path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/priv_sk"
+     #  path: "./artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/priv_sk"
 
     # users:
     #   admin:
     #     key:
-    #       path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/priv_sk"
+    #       path: "./artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/priv_sk"
     #     cert:
-    #       path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem"
+    #       path: "./artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem"
 
 
   Org1:
@@ -119,13 +119,13 @@ organizations:
     certificateAuthorities:
       - ca.org1.example.com
     adminPrivateKey:
-      path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+      path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
     users:
       Admin:
         key:
-          path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+          path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
         cert:
-          path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+          path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
 
 # List of orderers to send transaction and channel create/update requests to.
 # The orderers consent on the order of transactions in a block to be committed to the ledger. For the time being only one orderer is needed.
@@ -141,7 +141,7 @@ orderers:
       fail-fast: false
       allow-insecure: false
     tlsCACerts:
-      path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem"
+      path: "./artifacts/channel/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem"
 
 # List of peers to send various requests to, including endorsement, query and event listener registration.
 peers:
@@ -154,7 +154,7 @@ peers:
       grpc.http2.keepalive_time: 15
 
     tlsCACerts:
-      path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
+      path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
 
   peer1.org1.example.com:
     url: grpcs://localhost:8051
@@ -163,7 +163,7 @@ peers:
       grpc.http2.keepalive_time: 15
     tlsCACerts:
       # Certificate location absolute path
-      path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
+      path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
 
 # Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows certificate management to be done via REST APIs.
 certificateAuthorities:
@@ -172,28 +172,28 @@ certificateAuthorities:
     # the properties specified under this object are passed to the 'http' client verbatim when making the request to the Fabric-CA server
 
     tlsCACerts:
-      path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
+      path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
 
       client:
         key:
-          path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/tls/client.key"
+          path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/tls/client.key"
 
         cert:
-          path: "/Users/vincentchung/cleanslate/basic-setup-fabric/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/tls/client.crt"
+          path: "./artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/tls/client.crt"
 
     registrar:
       enrollId: admin
       enrollSecret: adminpw
     caName: ca.org1.example.com
 
-# entityMatchers:
-#   peer:
-#     - pattern: (\w+).example.(\w)
-#       urlSubstitutionExp: localhost:7051
-#       sslTargetOverrideURLSubstitution: localhost
-#       mappedhost: peer0.org1.example.com
-#   orderer:
-#     - pattern: (\w+).example.(\w)
-#       urlSubstitutionExp: localhost:7050
-#       sslTargetOverrideURLSubstitution: localhost
-#       mappedhost: orderer.example.com
+entityMatchers:
+  peer:
+    - pattern: (\w+).example.(\w)
+      urlSubstitutionExp: localhost:7051
+      sslTargetOverrideURLSubstitution: localhost
+      mappedhost: peer0.org1.example.com
+  orderer:
+    - pattern: (\w+).example.(\w)
+      urlSubstitutionExp: localhost:7050
+      sslTargetOverrideURLSubstitution: localhost
+      mappedhost: orderer.example.com
