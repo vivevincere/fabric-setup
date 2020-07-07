@@ -63,5 +63,7 @@ updateAnchorPeers(){
 removeOldCrypto
 
 createChannel
+sleep 2s
 joinChannel
+sleep 2s
 updateAnchorPeers
