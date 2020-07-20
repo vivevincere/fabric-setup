@@ -25,12 +25,17 @@ type EventMessage struct {
 	Message string `json:"message"`
 }
 
+
+
+// Helper function to construct response from SDK iterator
 func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
 	// buffer is a JSON array containing QueryResults
 	var buffer bytes.Buffer
 	buffer.WriteString("[")
 
 	bArrayMemberAlreadyWritten := false
+
+	
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
 		if err != nil {
@@ -108,6 +113,11 @@ func (d *DltAudit) QueryEvent(ctx contractapi.TransactionContextInterface, id st
 	return string(eventAsBytes), nil
 }
 
+
+// Pass start and end timestamps of desired range as strings 
+// If start is empty string, will search with no lower bound
+// If end is empty string, will search with no upper bound
+// If both empty string, will return all elements
 func (d *DltAudit) QueryAllByDateRange(ctx contractapi.TransactionContextInterface, start string, end string) (string, error) {
 	var queryString string
 	startInt,_ := strconv.Atoi(start)
@@ -126,6 +136,8 @@ func (d *DltAudit) QueryAllByDateRange(ctx contractapi.TransactionContextInterfa
 		//query startid to end
 	}
 
+
+	// SDK Rich query function
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil{
 		return "" , err
@@ -133,6 +145,8 @@ func (d *DltAudit) QueryAllByDateRange(ctx contractapi.TransactionContextInterfa
 
 	defer resultsIterator.Close()
 
+
+	// Helper function to construct a response from returned iterator
 	buffer, err := constructQueryResponseFromIterator(resultsIterator)
 	if err != nil{
 		return "", err
@@ -142,6 +156,10 @@ func (d *DltAudit) QueryAllByDateRange(ctx contractapi.TransactionContextInterfa
 }
 
 
+// Pass start and end timestamps of desired range and deviceID as strings
+// If start is empty string, will search with no lower bound
+// If end is empty string, will search with no upper bound
+// If both empty string, will return all elements
 func (d *DltAudit) QueryDeviceByDateRange(ctx contractapi.TransactionContextInterface, start string, end string, deviceID string) (string, error) {
 	var queryString string
 	startInt,_ := strconv.Atoi(start)
@@ -161,6 +179,7 @@ func (d *DltAudit) QueryDeviceByDateRange(ctx contractapi.TransactionContextInte
 		//query startid to end
 	}
 
+	// SDK rich query function
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil{
 		return "" , err
@@ -168,6 +187,7 @@ func (d *DltAudit) QueryDeviceByDateRange(ctx contractapi.TransactionContextInte
 
 	defer resultsIterator.Close()
 
+	// Helper function to construct response from iterator
 	buffer, err := constructQueryResponseFromIterator(resultsIterator)
 	if err != nil{
 		return "", err

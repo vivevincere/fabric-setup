@@ -47,12 +47,14 @@ func main() {
 	}
 	fmt.Printf(k)
 
+	// Queries a specific device between a certain date range
 	c, err := ctx.QueryDeviceByDateRange("41", "2000","fauci")
 	if err != nil {
 		log.Fatalf("QueryDeviceByDateRange failed: %v", err)
 	}
 	fmt.Printf(c)
 
+	//Queries all devices between a certain date range
 	f, err := ctx.QueryAllByDateRange("41", "2000")
 	if err != nil {
 		log.Fatalf("QueryDeviceByDateRange failed: %v", err)

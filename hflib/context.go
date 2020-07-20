@@ -119,9 +119,12 @@ func (c *Context) QueryEvent(id string, timestamp string) (string, error) {
 	return k, nil
 }
 
-
+// Pass start and end timestamps of desired range as strings
+// If start is empty string, will search with no lower bound
+// If end is empty string, will search with no upper bound
+// If both empty string, will return all elements
 func (c *Context) QueryAllByDateRange(start string, end string) (string, error) {
-	// Creates arguments to pass to "QueryEvent" chaincode
+	// Creates arguments to pass to "QueryAllByDateRange" chaincode
 	args := NewQueryEventArgs(start, end)
 
 	// Create request
@@ -142,9 +145,12 @@ func (c *Context) QueryAllByDateRange(start string, end string) (string, error) 
 	return k, nil
 }
 
-
+// Pass start and end timestamps of desired range as strings and deviceID
+// If start is empty string, will search with no lower bound
+// If end is empty string, will search with no upper bound
+// If both empty string, will return all elements
 func (c *Context) QueryDeviceByDateRange(start string, end string, deviceID string) (string, error) {
-	// Creates arguments to pass to "QueryEvent" chaincode
+	// Creates arguments to pass to "QueryDeviceByDateRange" chaincode
 	args := ThreeArgs(start, end, deviceID)
 
 	// Create request
