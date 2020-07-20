@@ -3,23 +3,60 @@ package main
 import (
 	"fmt"
 
-	"github.com/vivevincere/goosefabric"
 	"log"
-	"time"
+	 "time"
+
+	"fabric-setup/hflib"
 )
 
+// Example usage of hflib
 func main() {
-
-	objects := goosefabric.Init("./config.yaml", "mychannel", "Admin", "Org1")
-	err := objects.LogEvent("base", "faucet", "1234", "6d61697961686565")
-	if err != nil {
-		log.Fatal("LogEvent failed: %v", err)
+	// Create config
+	config := &hflib.Config{
+		ConfigFile:  "./config.yaml",
+		ChaincodeID: "base",
+		ChannelID:   "mychannel",
+		User:        "Admin",
+		Org:         "Org1",
 	}
-	time.Sleep(2 * time.Second)
-	k, err := objects.Get("base", "faucet", "1234")
+
+	// Initalize context
+	ctx := hflib.Init(config)
+
+	// Log an event
+	err := ctx.LogEvent("faucet", "1234", "6d61697961686565")
 	if err != nil {
-		log.Fatal("QueryEvent failed: %v", err)
+		log.Fatalf("LogEvent failed: %v", err)
+	}
+	err = ctx.LogEvent("faucet", "40", "6d61697961686565")
+	if err != nil {
+		log.Fatalf("LogEvent failed: %v", err)
+	}
+	err = ctx.LogEvent("fauci", "1234", "6d61697961686565")
+	if err != nil {
+		log.Fatalf("LogEvent failed: %v", err)
+	}
+
+	// Wait for event to complete
+	time.Sleep(2 * time.Second)
+
+	Query event
+	k, err := ctx.QueryEvent("faucet", "40")
+	if err != nil {
+		log.Fatalf("QueryEvent failed: %v", err)
 	}
 	fmt.Printf(k)
+
+	c, err := ctx.QueryDeviceByDateRange("41", "2000","fauci")
+	if err != nil {
+		log.Fatalf("QueryDeviceByDateRange failed: %v", err)
+	}
+	fmt.Printf(c)
+
+	f, err := ctx.QueryAllByDateRange("41", "2000")
+	if err != nil {
+		log.Fatalf("QueryDeviceByDateRange failed: %v", err)
+	}
+	fmt.Printf(f)
 
 }
