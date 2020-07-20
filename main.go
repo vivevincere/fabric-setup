@@ -40,7 +40,7 @@ func main() {
 	// Wait for event to complete
 	time.Sleep(2 * time.Second)
 
-	Query event
+	//Query event
 	k, err := ctx.QueryEvent("faucet", "40")
 	if err != nil {
 		log.Fatalf("QueryEvent failed: %v", err)
